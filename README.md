@@ -9,6 +9,7 @@ This model implementation can be used separately from the Finitewave, allowing f
 ### Reference
 Mitchell, C. C., & Schaeffer, D. G. (2003). A two-current model for the dynamics of cardiac membrane potential. 
 Bulletin of Mathematical Biology, 65, 767–793.
+
 DOI: https://doi.org/10.1016/S0092-8240(03)00041-7
 
 ### How to use (quickstart)
