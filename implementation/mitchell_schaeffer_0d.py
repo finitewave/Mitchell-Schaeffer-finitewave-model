@@ -5,7 +5,7 @@ and a class for the 0D model itself.
 
 """
 
-from model_template import ops
+from mitchell_schaeffer import ops
 
 
 class Stimulation:
@@ -37,7 +37,7 @@ class Stimulation:
         return self.amplitude if self.t_start <= t < self.t_start + self.duration else 0.0
 
 
-class Model0D:
+class MitchellSchaeffer0D:
     """
     Model OD implementation.
 
@@ -81,7 +81,27 @@ class Model0D:
         i : int
             Current time step index.
         """
-        raise NotImplementedError("Model0D.step: implement your integration scheme (e.g., explicit Euler).")
+        self.variables["h"] += self.dt*ops.calc_dh(
+            self.variables["h"],
+            self.variables["u"],
+            self.parameters["tau_close"],
+            self.parameters["tau_open"],
+            self.parameters["u_gate"]
+        )
+
+        J_in = ops.calc_J_in(
+            self.variables["u"],
+            self.variables["h"],
+            self.parameters["tau_in"]
+        )   
+
+        J_out = ops.calc_J_out(
+            self.variables["u"],
+            self.parameters["tau_out"]
+        )
+
+        self.variables["u"] += self.dt*(ops.calc_rhs(J_in, J_out) + 
+                                        sum(stim.stim(i * self.dt) for stim in self.stimulations))
 
     def run(self, t_max: float):
         """

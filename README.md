@@ -1,37 +1,19 @@
-## Finitewave model template (replace with the model name)
+## Mitchell-Schaeffer Finitewave model
 
-Add model description here and fill the sections below.
+This is a phenomenological two-variable model capturing the essence of cardiac 
+action potential dynamics using a simplified formulation. It separates inward and 
+outward currents and uses a single gating variable to regulate excitability.
 
 This model implementation can be used separately from the Finitewave, allowing for standalone simulations and testing of the model dynamics without the need for the entire framework.
 
-### Developer TODO Checklist (template repository only)
-- [ ] **Change model entry point in `pyproject.toml`**  
-  Update the entry point in the `pyproject.toml` file to reflect the new model's identifier. This ensures that the model can be correctly referenced and utilized within the project.
-  
-  In pyproject.toml, replace "model_template" with the actual model id. It must match the name of the directory where ops.py is located.
-  ```toml
-  [project.entry-points."finitewave.models"] 
-  model_template = "finitewave_models.model_template"
-  ```
-
-- [ ] **Implement `ops.py` model equations**  
-  Implement the model equations in the `ops.py` module. This module is the single source of truth for the model equations. Provide pure Python functions with scalar inputs/outputs (no NumPy arrays, no classes, no globals). Do NOT add numba/jax/torch here — the Finitewave runtime will wrap these functions for you. Stimulus and time integration are handled outside of the model. Here you only return time derivatives.
-
-- [ ] **Create 0D implementation for tests and examples**  
-  Design a zero-dimensional (0D) implementation of the model that can be used for testing and demonstration purposes. This should simplify the model to its core functionality, making it easier to validate and showcase.
-
-- [ ] **Provide at least one workable example for the model**  
-  Create a practical example that demonstrates how to use the model: model initialization, model stimulation and visualization of the model's AP.
-
-- [ ] **Implement model tests**  
-  Write unit tests to verify the correctness of the model's implementation: check model attributes and estimate AP parameters (min/max amplitude, duration) - this ensures that the model is excitable and generates the expected AP. 
-
 ### Reference
-Paper, Authors, DOI.
+Mitchell, C. C., & Schaeffer, D. G. (2003). A two-current model for the dynamics of cardiac membrane potential. 
+Bulletin of Mathematical Biology, 65, 767–793.
+DOI: https://doi.org/10.1016/S0092-8240(03)00041-7
 
 ### How to use (quickstart)
 ```bash
-python -m example.model_example
+python -m examples.mitchell_schaeffer_example
 ```
 
 ### How to test
@@ -42,27 +24,31 @@ python -m pytest -q
 ### Repository structure
 ```text
 .
-├── model_template/                  # equations package (ops.py)
+├── mitchell_schaeffer/               # equations package (ops.py)
 │   ├── __init__.py
-│   └── ops.py                       # fill with the model equations (pure functions)
-├── implementation/                  # 0D model implementation
+│   └── ops.py                        # fill with the model equations (pure functions)
+├── implementation/                   # 0D model implementation
 │   ├── __init__.py
-│   └── model_0d.py
+│   └── mitchell_schaeffer_0d.py
 ├── example/
-│   └── model_example.py             # minimal script to run a short trace
+│   └── mitchell_schaeffer_example.py # minimal script to run a short trace
 ├── tests/
-│   └── test.py                      # smoke test; extend with reproducibility checks
+│   └── mitchell_schaeffer_test.py    # smoke test; extend with reproducibility checks
 ├── .gitignore
-├── LICENSE                          # MIT
-├── pyproject.toml                   # placeholders to replace
-└── README.md                        # this file
+├── LICENSE                           # MIT
+├── pyproject.toml                    # placeholders to replace
+└── README.md                         # this file
 ```
 
 ### Variables
-Model state variables: description, units and ranges (optional)
-- `u` — ...
+- `u` — Transmembrane potential (dimensionless)
+- `h` — Gating variable (dimensionless)
 
 ### Parameters
 Parameters and their defualt values
-- `par` - ...
+- `tau_close = 150.0` - Inactivation time constant (closing).
+- `tau_open = 120.0`  - Recovery time constant (opening).
+- `tau_out = 6.0`     - Time constant for outward current (repolarization)
+- `tau_in = 0.3`      - Time constant for inward flow.
+- `u_gate = 0.13`     - Threshold potential for switching gate dynamics.
 
