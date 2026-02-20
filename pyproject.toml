@@ -3,8 +3,8 @@ requires = ["hatchling>=1.21.0"]
 build-backend = "hatchling.build"
 
 [project]
-name = "mitchell-schaeffer-finitewave-model"
-version = "0.1.0"
+name = "finitewave-model-mitchell-schaeffer"
+version = "0.2.0"
 description = "Mitchell-Schaeffer model."
 readme = "README.md"
 requires-python = ">=3.10"
