@@ -81,27 +81,34 @@ class MitchellSchaeffer0D:
         i : int
             Current time step index.
         """
-        self.variables["h"] += self.dt*ops.calc_dh(
-            self.variables["h"],
-            self.variables["u"],
+        u_old = self.variables["u"]
+        h_old = self.variables["h"]
+
+        dh = ops.calc_dh(
+            h_old,
+            u_old,
             self.parameters["tau_close"],
             self.parameters["tau_open"],
             self.parameters["u_gate"]
         )
 
         J_in = ops.calc_J_in(
-            self.variables["u"],
-            self.variables["h"],
+            u_old,
+            h_old,
             self.parameters["tau_in"]
-        )   
+        )
 
         J_out = ops.calc_J_out(
-            self.variables["u"],
+            u_old,
             self.parameters["tau_out"]
         )
 
-        self.variables["u"] += self.dt*(ops.calc_rhs(J_in, J_out) + 
-                                        sum(stim.stim(i * self.dt) for stim in self.stimulations))
+        stim_current = sum(stim.stim(i * self.dt) for stim in self.stimulations)
+
+        du = ops.calc_rhs(J_in, J_out) + stim_current
+
+        self.variables["h"] = h_old + self.dt * dh
+        self.variables["u"] = u_old + self.dt * du
 
     def run(self, t_max: float):
         """
