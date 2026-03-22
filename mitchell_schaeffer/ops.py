@@ -49,7 +49,13 @@ def calc_rhs(J_in , J_out) -> float:
     return J_in + J_out
 
 
-def calc_dh(h, u, tau_close, tau_open, u_gate):
+def calc_where(cond, x, y):
+    if cond:
+        return x
+    return y
+
+
+def calc_dh(h, u, tau_close, tau_open, u_gate, where=calc_where):
     """
     Updates the gating variable h for the inward current.
 
@@ -77,7 +83,7 @@ def calc_dh(h, u, tau_close, tau_open, u_gate):
     float
         Updated value of h.
     """
-    h = (1.0 - h) / tau_open if u < u_gate else -h / tau_close
+    h = calc_where(u < u_gate, (1.0 - h) / tau_open, -h / tau_close)
     return h
 
 
