@@ -83,7 +83,7 @@ def calc_dh(h, u, tau_close, tau_open, u_gate, where=calc_where):
     float
         Updated value of h.
     """
-    h = calc_where(u < u_gate, (1.0 - h) / tau_open, -h / tau_close)
+    h = where(u < u_gate, (1.0 - h) / tau_open, -h / tau_close)
     return h
 
 
