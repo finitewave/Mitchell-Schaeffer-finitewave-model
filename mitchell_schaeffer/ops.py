@@ -22,6 +22,7 @@ __all__ = (
     "get_variables",
     "get_parameters",
     "calc_rhs",
+    "calc_where",
     "calc_dh",
     "calc_J_in",
     "calc_J_out"
@@ -55,7 +56,7 @@ def calc_where(cond, x, y):
     return y
 
 
-def calc_dh(h, u, tau_close, tau_open, u_gate, where=calc_where):
+def calc_dh(h, u, tau_close, tau_open, u_gate):
     """
     Updates the gating variable h for the inward current.
 
@@ -83,7 +84,7 @@ def calc_dh(h, u, tau_close, tau_open, u_gate, where=calc_where):
     float
         Updated value of h.
     """
-    h = where(u < u_gate, (1.0 - h) / tau_open, -h / tau_close)
+    h = calc_where(u < u_gate, (1.0 - h) / tau_open, -h / tau_close)
     return h
 
 
