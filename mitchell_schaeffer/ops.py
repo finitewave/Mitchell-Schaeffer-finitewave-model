@@ -43,6 +43,49 @@ def get_parameters() -> dict[str, float]:
     return {"tau_close": 150.0, "tau_open": 120.0, "tau_out": 6.0,  "tau_in": 0.3, "u_gate": 0.13}
 
 
+def ionic_step(dt, u, h, tau_close, tau_open, tau_out, tau_in, u_gate):
+    """
+    Computes the ionic step for the Mitchell-Schaeffer model.
+
+    This function calculates the change in membrane potential (du) and
+    the change in the gating variable (dh) based on the current state
+    and parameters of the model.
+
+    Parameters
+    ----------
+    u : float
+        Current membrane potential (dimensionless, in [0,1]).
+    h : float
+        Current value of the gating variable.
+    tau_close : float
+        Inactivation time constant (closing).
+    tau_open : float
+        Recovery time constant (opening).
+    tau_out : float
+        Time constant for outward current (repolarization).
+    tau_in : float
+        Time constant for inward flow.
+    u_gate : float
+        Threshold potential for switching gate dynamics.
+
+    Returns
+    -------
+    tuple[float, float]
+        rhs : float
+            The right-hand side of the membrane potential equation (du/dt).
+        h_new : float
+            Updated value of the gating variable h after the time step.
+    """
+    J_in = calc_J_in(u, h, tau_in) 
+    J_out = calc_J_out(u, tau_out)
+    
+    dh = calc_dh(h, u, tau_close, tau_open, u_gate)
+    rhs = calc_rhs(J_in, J_out)
+    
+    h_new = h + dt * dh
+    return rhs, h_new
+
+
 def calc_rhs(J_in , J_out) -> float:
     """
     Computes the right-hand side of the model.
@@ -112,8 +155,8 @@ def calc_J_in(u, h, tau_in):
     float
         Value of the inward current.
     """
-    C = (u**2)*(1-u)
-    return h*C/tau_in
+    C = u * u * (1 - u)
+    return h * C / tau_in
 
 def calc_J_out(u, tau_out):
     """
@@ -136,4 +179,4 @@ def calc_J_out(u, tau_out):
     float
         Value of the outward current.
     """
-    return -u/tau_out
+    return -u / tau_out

@@ -71,6 +71,8 @@ class MitchellSchaeffer0D:
         self.variables = ops.get_variables()
         self.parameters = ops.get_parameters()
         self.history = {s: [] for s in self.variables}
+        self.stim_history = []
+        self.times = []
 
     def step(self, i: int):
         """
@@ -81,34 +83,12 @@ class MitchellSchaeffer0D:
         i : int
             Current time step index.
         """
-        u_old = self.variables["u"]
-        h_old = self.variables["h"]
+        rhs, h_new = ops.ionic_step(self.dt, **self.variables, **self.parameters)
 
-        dh = ops.calc_dh(
-            h_old,
-            u_old,
-            self.parameters["tau_close"],
-            self.parameters["tau_open"],
-            self.parameters["u_gate"]
-        )
-
-        J_in = ops.calc_J_in(
-            u_old,
-            h_old,
-            self.parameters["tau_in"]
-        )
-
-        J_out = ops.calc_J_out(
-            u_old,
-            self.parameters["tau_out"]
-        )
-
-        stim_current = sum(stim.stim(i * self.dt) for stim in self.stimulations)
-
-        du = ops.calc_rhs(J_in, J_out) + stim_current
-
-        self.variables["h"] = h_old + self.dt * dh
-        self.variables["u"] = u_old + self.dt * du
+        stim_curr = self.dt * sum(stim.stim(t=self.dt*i) for stim in self.stimulations)
+        self.stim_history.append(stim_curr)
+        self.variables["u"] += self.dt * rhs + stim_curr
+        self.variables["h"] = h_new
 
     def run(self, t_max: float):
         """
@@ -124,3 +104,4 @@ class MitchellSchaeffer0D:
             self.step(i)
             for s in self.variables:
                 self.history[s].append(self.variables[s])
+            self.times.append(i * self.dt)
