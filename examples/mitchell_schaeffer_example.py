@@ -17,7 +17,7 @@ t_max = 600.0
 model = MitchellSchaeffer0D(dt=0.01, stimulations=stimulations)
 model.run(t_max=t_max)
 
-fig = plt.figure(figsize=(10, 5))
+# fig = plt.figure(figsize=(10, 5))
 
 plt.plot(model.times, model.history['u'], lw=2)
 plt.xlabel('Time (ms)')
@@ -26,4 +26,4 @@ plt.title('0D Model Simulation')
 plt.grid()
 plt.show()
 
-fig.savefig('mitchell_schaeffer_ap.png', dpi=300)
+# fig.savefig('mitchell_schaeffer_ap.png', dpi=300)
