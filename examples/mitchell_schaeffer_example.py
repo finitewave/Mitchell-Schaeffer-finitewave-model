@@ -19,7 +19,7 @@ model.run(t_max=t_max)
 
 fig = plt.figure(figsize=(10, 5))
 
-plt.plot(model.times, model.history['u'])
+plt.plot(model.times, model.history['u'], lw=2)
 plt.xlabel('Time (ms)')
 plt.ylabel('Membrane Potential (u)')
 plt.title('0D Model Simulation')
