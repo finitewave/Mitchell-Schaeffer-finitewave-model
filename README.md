@@ -17,6 +17,8 @@ DOI: https://doi.org/10.1016/S0092-8240(03)00041-7
 python -m examples.mitchell_schaeffer_example
 ```
 
+![Alt text](mitchell_schaeffer_ap.png)
+
 ### How to test
 ```bash
 python -m pytest -q
