@@ -19,8 +19,10 @@ DOI: https://doi.org/10.1016/S0092-8240(03)00041-7
 """
 
 __all__ = (
+    "get_diffusion_coefficient",
     "get_variables",
     "get_parameters",
+    "ionic_step",
     "calc_rhs",
     "calc_where",
     "calc_dh",
@@ -28,6 +30,13 @@ __all__ = (
     "calc_J_out"
 )
 
+
+def get_diffusion_coefficient() -> float:
+    """
+    Returns the diffusion coefficient for spatial propagation in the model.
+    """
+    return {"D_model": 1.}
+    
 
 def get_variables() -> dict[str, float]:
     """
