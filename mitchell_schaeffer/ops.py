@@ -35,7 +35,7 @@ def get_diffusion_coefficient() -> float:
     """
     Returns the diffusion coefficient for spatial propagation in the model.
     """
-    return {"D_model": 1.}
+    return {"D_model": 0.3}
     
 
 def get_variables() -> dict[str, float]:
